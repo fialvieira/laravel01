@@ -6,7 +6,7 @@ use Closure;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 
-class OnlyAdmin
+class StartMiddleware
 {
     /**
      * Handle an incoming request.
@@ -15,7 +15,8 @@ class OnlyAdmin
      */
     public function handle(Request $request, Closure $next): Response
     {
-        echo '>>> ADMIN <br>';
+        // Vai ser executado antes do controller
+        echo '<p>Start Middleware - before controller</p>';
         return $next($request);
     }
 }

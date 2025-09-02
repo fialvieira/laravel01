@@ -1,23 +1,27 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\MainController;
-use App\Http\Controllers\SingleActionController;
-use App\Http\Controllers\UserController;
-use App\Http\Controllers\ClientsController;
-use App\Http\Controllers\ProductsController;
+use App\Http\Middleware\EndMiddleware;
+use App\Http\Middleware\StartMiddleware;
+use Illuminate\Support\Facades\Route;
 
-Route::get('/init', [MainController::class, 'initMethod'])->name('init');
-Route::get('/view', [MainController::class, 'viewPage'])->name('view');
+// Route::middleware([StartMiddleware::class, EndMiddleware::class])->group(function () {
+//     Route::get('/', [MainController::class, 'index'])->name('index');
+//     Route::get('/about', [MainController::class, 'about'])->name('about')->withoutMiddleware([EndMiddleware::class]);
+//     Route::get('/contact', [MainController::class, 'contact'])->name('contact');
+// });
 
-// Route para controller single action
-Route::get('/single-action', SingleActionController::class)->name('single');
 
-// Route para controller do tipo resource
-// Route::resource('users', UserController::class);
+// Route::get('/', [MainController::class, 'index'])->name('index')->middleware([StartMiddleware::class]);
+// Route::get('/about', [MainController::class, 'about'])->name('about')->middleware([EndMiddleware::class]);
+// Route::get('/contact', [MainController::class, 'contact'])->name('contact')->middleware([StartMiddleware::class, EndMiddleware::class]); // Executados na ordem do array
 
-Route::resources([
-    'users' => UserController::class,
-    'clients' => ClientsController::class,
-    'products' => ProductsController::class
-]);
+Route::middleware(['correr_antes', 'correr_depois'])->group(function () {
+    Route::get('/', [MainController::class, 'index'])->name('index');
+    Route::get('/about', [MainController::class, 'about'])->name('about');
+    Route::get('/contact', [MainController::class, 'contact'])->name('contact');
+});
+
+// Route::get('/', [MainController::class, 'index'])->name('index');
+// Route::get('/about', [MainController::class, 'about'])->name('about');
+// Route::get('/contact', [MainController::class, 'contact'])->name('contact');
